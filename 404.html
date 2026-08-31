@@ -1,26 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>Redirecting...</title>
-    <script>
-        (function() {
-            var path = window.location.pathname;
-            path = path.replace(/\/+$/, '');
-            var clean = path || '/';
-            if (clean === '/') {
-                window.location.replace('/index.html');
-                return;
-            }
-            if (/\.html?$/.test(clean)) {
-                return;
-            }
-            var target = clean + '.html';
-            window.location.replace(target);
-        })();
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/">
+    <title>404 - Page Not Found | gr4ktung</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <p>Redirecting...</p>
+    <div class="cyber-grid"></div>
+    <nav>
+        <div class="logo"><a href="/">gr4ktung</a></div>
+        <div class="nav-links">
+            <a href="/about.html">~/about</a>
+            <a href="/blog.html">~/posts</a>
+            <a href="/achievements.html">~/achievements</a>
+        </div>
+    </nav>
+    <main>
+        <h2>404: PAGE_NOT_FOUND</h2>
+        <div class="card">
+            <p>The requested resource does not exist on this server.<br><br>
+            Check the URL, or head back to the <a href="/">home</a> page.</p>
+        </div>
+    </main>
+    <footer><p>sys.exit(0) |Designed by gr4ktung</p></footer>
 </body>
 </html>
