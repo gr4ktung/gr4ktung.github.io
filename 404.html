@@ -6,11 +6,17 @@
     <script>
         (function() {
             var path = window.location.pathname;
-            path = path.replace(/\/+$/, '') || '/';
-            if (path.endsWith('.html') || path === '/') {
+            path = path.replace(/\/+$/, '');
+            var clean = path || '/';
+            if (clean === '/') {
+                window.location.replace('/index.html');
                 return;
             }
-            window.location.replace(path + '.html');
+            if (/\.html?$/.test(clean)) {
+                return;
+            }
+            var target = clean + '.html';
+            window.location.replace(target);
         })();
     </script>
 </head>

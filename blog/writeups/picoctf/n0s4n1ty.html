@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <base href="/blog/writeups/picoctf/">
     <meta charset="UTF-8">
     <title>picoCTF n0s4n1ty Writeup | Web Exploitation | gr4ktung</title>
     <meta name="description" content="Deep dive into the picoCTF n0s4n1ty challenge. Step-by-step exploitation of web vulnerabilities by gr4ktung.">
@@ -10,11 +11,11 @@
     <div class="cyber-grid"></div>
 
     <nav>
-        <div class="logo"><a href="../../../index.html">gr4ktung</a></div>
+        <div class="logo"><a href="/">gr4ktung</a></div>
         <div class="nav-links">
-            <a href="../../../about.html">~/about</a>
-            <a href="../../../blog.html" class="active">~/posts</a>
-            <a href="../../../achievements.html">~/achievements</a>
+            <a href="/about">~/about</a>
+            <a href="/blog" class="active">~/posts</a>
+            <a href="/achievements">~/achievements</a>
         </div>
     </nav>
 
@@ -117,7 +118,7 @@
                 </p>
 
                 <div class="post-nav">
-                    <a href="../../../blog.html" class="btn">RETURN_TO_DIR</a>
+                    <a href="/blog" class="btn">RETURN_TO_DIR</a>
                 </div>
             </article>
 
@@ -133,5 +134,6 @@
         <button class="scroll-btn" onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})">↓</button>
     </div>
 
+    <script src="../../../script.js"></script>
 </body>
 </html>

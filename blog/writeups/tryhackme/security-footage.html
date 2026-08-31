@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/blog/writeups/tryhackme/">
     <title>gr4ktung | Security Footage - THM Writeup</title>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../../style.css">
@@ -11,11 +12,11 @@
     <div class="cyber-grid"></div>
 
     <nav>
-        <div class="logo"><a href="../../../index.html">gr4ktung</a></div>
+        <div class="logo"><a href="/">gr4ktung</a></div>
         <div class="nav-links">
-            <a href="../../../about.html">~/about</a>
-            <a href="../../../blog.html" class="active">~/posts</a>
-            <a href="../../../achievements.html">~/achievements</a>
+            <a href="/about">~/about</a>
+            <a href="/blog" class="active">~/posts</a>
+            <a href="/achievements">~/achievements</a>
         </div>
     </nav>
 
@@ -91,7 +92,7 @@
                 <p>Hope you learnt something from this post!</p>
 
                 <div class="post-nav">
-                    <a href="../../../blog.html" class="btn">RETURN_TO_BLOG</a>
+                    <a href="/blog" class="btn">RETURN_TO_BLOG</a>
                 </div>
             </article>
 
@@ -107,5 +108,7 @@
         <button class="scroll-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
         <button class="scroll-btn" onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})">↓</button>
     </div>
+
+    <script src="../../../script.js"></script>
 </body>
 </html>

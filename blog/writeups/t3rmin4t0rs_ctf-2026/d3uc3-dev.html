@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <base href="/blog/writeups/t3rmin4t0rs_ctf-2026/">
     <meta charset="UTF-8">
     <title>d3uc3-dev Writeup | SSRF & NoSQLi | t3rm1n4t0rs CTF</title>
     <meta name="description" content="Technical walkthrough of the d3uc3-dev challenge. Exploiting SSRF, NoSQL Injection, and JWT Forgery to achieve Superadmin status.">
@@ -10,7 +11,7 @@
     <div class="cyber-grid"></div>
 
     <nav>
-        <div class="logo"><a href="../../../index.html">gr4ktung</a></div>
+        <div class="logo"><a href="/">gr4ktung</a></div>
         
         <div class="search-container">
             <span class="search-prompt">gr4ktung@blog:~$ grep</span>
@@ -18,9 +19,9 @@
         </div>
 
         <div class="nav-links">
-            <a href="../../../about.html">~/about</a>
-            <a href="../../../blog.html" class="active">~/posts</a>
-            <a href="../../../achievements.html">~/achievements</a>
+            <a href="/about">~/about</a>
+            <a href="/blog" class="active">~/posts</a>
+            <a href="/achievements">~/achievements</a>
         </div>
     </nav>
 
@@ -190,22 +191,22 @@ curl "http://localhost:8080/proxy?url=http://localhost:8080/secrets/creds.txt"</
                 </div>
 
                 <div class="post-nav">
-                    <a href="../../../blog.html" class="btn">RETURN_TO_DIR</a>
+                    <a href="/blog" class="btn">RETURN_TO_DIR</a>
                 </div>
             </article>
 
             <aside class="sidebar" style="background: transparent; border: none; padding: 0;">
                 <h4 style="padding-left: 20px;">RELATED_INTEL FROM t3rmin4t0rs-CTF 2026</h4>
                 <div class="staggered-links">
-                    <a href="../t3rmin4t0rs_ctf-2026/ailavator.html" class="stagger-link">Boot2Root: Ailavator</a>
-                    <a href="../t3rmin4t0rs_ctf-2026/dc.html" class="stagger-link">IoT/Web: D-C</a>
-                    <a href="../t3rmin4t0rs_ctf-2026/epst3in-files.html" class="stagger-link">Web: Epst3in-files</a>
-                    <a href="../t3rmin4t0rs_ctf-2026/l33node-m4g1c.html" class="stagger-link">Web: l33node-m4g1c</a>
-                    <a href="../t3rmin4t0rs_ctf-2026/majembe.html" class="stagger-link">Crypto: Maj3mb3</a>
-                    <a href="../t3rmin4t0rs_ctf-2026/mbavu-destroyer.html" class="stagger-link">Crypto: Mb4vu-d3stroy3r</a>
-                    <a href="../t3rmin4t0rs_ctf-2026/tony-st4ck.html" class="stagger-link">Forensics: T0ny-st4ck</a>
-                    <a href="../t3rmin4t0rs_ctf-2026/weka-mawe01.html" class="stagger-link">Misc: W3k4-m4w3 01</a>
-                    <a href="../t3rmin4t0rs_ctf-2026/weka-mawe02.html" class="stagger-link">Misc: W3k4-m4w3</a>
+                    <a href="/blog/writeups/t3rmin4t0rs_ctf-2026/ailavator" class="stagger-link">Boot2Root: Ailavator</a>
+                    <a href="/blog/writeups/t3rmin4t0rs_ctf-2026/dc" class="stagger-link">IoT/Web: D-C</a>
+                    <a href="/blog/writeups/t3rmin4t0rs_ctf-2026/epst3in-files" class="stagger-link">Web: Epst3in-files</a>
+                    <a href="/blog/writeups/t3rmin4t0rs_ctf-2026/l33node-m4g1c" class="stagger-link">Web: l33node-m4g1c</a>
+                    <a href="/blog/writeups/t3rmin4t0rs_ctf-2026/majembe" class="stagger-link">Crypto: Maj3mb3</a>
+                    <a href="/blog/writeups/t3rmin4t0rs_ctf-2026/mbavu-destroyer" class="stagger-link">Crypto: Mb4vu-d3stroy3r</a>
+                    <a href="/blog/writeups/t3rmin4t0rs_ctf-2026/tony-st4ck" class="stagger-link">Forensics: T0ny-st4ck</a>
+                    <a href="/blog/writeups/t3rmin4t0rs_ctf-2026/weka-mawe01" class="stagger-link">Misc: W3k4-m4w3 01</a>
+                    <a href="/blog/writeups/t3rmin4t0rs_ctf-2026/weka-mawe02" class="stagger-link">Misc: W3k4-m4w3</a>
                 </div>
             </aside> 
         </div>
