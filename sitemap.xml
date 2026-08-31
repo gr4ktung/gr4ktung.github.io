@@ -1,35 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://gr4ktung.vercel.app/</loc>
+    <loc>https://gr4ktung.github.io/index.html</loc>
     <priority>1.00</priority>
   </url>
   <url>
-    <loc>https://gr4ktung.vercel.app/about</loc>
+    <loc>https://gr4ktung.github.io/about.html</loc>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://gr4ktung.vercel.app/blog</loc>
+    <loc>https://gr4ktung.github.io/blog.html</loc>
     <priority>0.90</priority>
   </url>
   <url>
-    <loc>https://gr4ktung.vercel.app/achievements</loc>
+    <loc>https://gr4ktung.github.io/achievements.html</loc>
     <priority>0.70</priority>
   </url>
 
-  <url><loc>https://gr4ktung.vercel.app/blog/writeups/t3rmin4t0rs_ctf-2026/ailavator</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.vercel.app/blog/writeups/t3rmin4t0rs_ctf-2026/d3uc3-dev</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.vercel.app/blog/writeups/t3rmin4t0rs_ctf-2026/dc</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.vercel.app/blog/writeups/t3rmin4t0rs_ctf-2026/epst3in-files</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.vercel.app/blog/writeups/t3rmin4t0rs_ctf-2026/l33node-m4g1c</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.vercel.app/blog/writeups/t3rmin4t0rs_ctf-2026/majembe</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.vercel.app/blog/writeups/t3rmin4t0rs_ctf-2026/mbavu-destroyer</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.vercel.app/blog/writeups/t3rmin4t0rs_ctf-2026/tony-st4ck</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.vercel.app/blog/writeups/t3rmin4t0rs_ctf-2026/weka-mawe01</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.vercel.app/blog/writeups/t3rmin4t0rs_ctf-2026/weka-mawe02</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.vercel.app/blog/writeups/hackthebox/selentium</loc><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/ailavator.html</loc><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/d3uc3-dev.html</loc><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/dc.html</loc><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/epst3in-files.html</loc><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/l33node-m4g1c.html</loc><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/majembe.html</loc><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/mbavu-destroyer.html</loc><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/tony-st4ck.html</loc><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/weka-mawe01.html</loc><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/weka-mawe02.html</loc><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/hackthebox/silentium.html</loc><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/metactf/dirtbag-ctf_2026/c0nfused-surfing.html</loc><priority>0.64</priority></url>
 
-  <url><loc>https://gr4ktung.vercel.app/blog/writeups/picoctf/n0s4n1ty</loc><priority>0.50</priority></url>
-    <url><loc>https://gr4ktung.vercel.app/blog/writeups/picoctf/2026/order-order</loc><priority>0.50</priority></url>
-  <url><loc>https://gr4ktung.vercel.app/blog/writeups/tryhackme/security-footage</loc><priority>0.50</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/picoctf/n0s4n1ty.html</loc><priority>0.50</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/picoctf/2026/order-order.html</loc><priority>0.50</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/tryhackme/security-footage.html</loc><priority>0.50</priority></url>
 </urlset>

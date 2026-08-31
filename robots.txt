@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://gr4ktung.vercel.app/sitemap.xml
+Sitemap: https://gr4ktung.github.io/sitemap.xml

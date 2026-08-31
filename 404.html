@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Redirecting...</title>
+    <script>
+        (function() {
+            var path = window.location.pathname;
+            path = path.replace(/\/+$/, '') || '/';
+            if (path.endsWith('.html') || path === '/') {
+                return;
+            }
+            window.location.replace(path + '.html');
+        })();
+    </script>
+</head>
+<body>
+    <p>Redirecting...</p>
+</body>
+</html>
