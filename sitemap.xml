@@ -2,36 +2,39 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://gr4ktung.github.io/</loc>
+    <lastmod>2026-09-01</lastmod>
     <priority>1.00</priority>
   </url>
   <url>
     <loc>https://gr4ktung.github.io/about.html</loc>
+    <lastmod>2026-09-01</lastmod>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://gr4ktung.github.io/blog.html</loc>
+    <lastmod>2026-09-01</lastmod>
     <priority>0.90</priority>
   </url>
   <url>
     <loc>https://gr4ktung.github.io/achievements.html</loc>
+    <lastmod>2026-09-01</lastmod>
     <priority>0.70</priority>
   </url>
 
-  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/ailavator.html</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/d3uc3-dev.html</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/dc.html</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/epst3in-files.html</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/l33node-m4g1c.html</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/majembe.html</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/mbavu-destroyer.html</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/tony-st4ck.html</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/weka-mawe01.html</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/weka-mawe02.html</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.github.io/blog/writeups/hackthebox/silentium.html</loc><priority>0.64</priority></url>
-  <url><loc>https://gr4ktung.github.io/blog/writeups/metactf/dirtbag-ctf_2026/c0nfused-surfing.html</loc><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/ailavator.html</loc><lastmod>2026-03-14</lastmod><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/d3uc3-dev.html</loc><lastmod>2026-03-10</lastmod><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/dc.html</loc><lastmod>2026-03-17</lastmod><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/epst3in-files.html</loc><lastmod>2026-03-12</lastmod><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/l33node-m4g1c.html</loc><lastmod>2026-03-12</lastmod><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/majembe.html</loc><lastmod>2026-03-13</lastmod><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/mbavu-destroyer.html</loc><lastmod>2026-03-13</lastmod><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/tony-st4ck.html</loc><lastmod>2026-03-14</lastmod><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/weka-mawe01.html</loc><lastmod>2026-03-13</lastmod><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/t3rmin4t0rs_ctf-2026/weka-mawe02.html</loc><lastmod>2026-03-13</lastmod><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/hackthebox/silentium.html</loc><lastmod>2026-04-20</lastmod><priority>0.64</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/metactf/dirtbag-ctf_2026/c0nfused-surfing.html</loc><lastmod>2026-08-31</lastmod><priority>0.64</priority></url>
 
-  <url><loc>https://gr4ktung.github.io/blog/writeups/picoctf/n0s4n1ty.html</loc><priority>0.50</priority></url>
-  <url><loc>https://gr4ktung.github.io/blog/writeups/picoctf/2026/order-order.html</loc><priority>0.50</priority></url>
-  <url><loc>https://gr4ktung.github.io/blog/writeups/tryhackme/security-footage.html</loc><priority>0.50</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/picoctf/n0s4n1ty.html</loc><lastmod>2026-05-13</lastmod><priority>0.50</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/picoctf/2026/order-order.html</loc><lastmod>2026-03-22</lastmod><priority>0.50</priority></url>
+  <url><loc>https://gr4ktung.github.io/blog/writeups/tryhackme/security-footage.html</loc><lastmod>2026-05-13</lastmod><priority>0.50</priority></url>
 </urlset>
-
